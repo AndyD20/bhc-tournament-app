@@ -14,6 +14,10 @@
         tournament.recordRound('hit', scorerId, location);
     }
 
+    function recordAfterblow(scorerId: string) {
+        tournament.recordRound('afterblow', scorerId);
+    }
+
     function recordDouble() {
         tournament.recordRound('double');
     }
@@ -48,6 +52,9 @@
                     <button onclick={() => recordHit('arms', p1.id)} class="{btnClass} bg-blue-800 hover:bg-blue-700">
                         Arms (+{tournament.settings.points.arms})
                     </button>
+                    <button onclick={() => recordAfterblow(p1.id)} class="{btnClass} bg-indigo-900/80 hover:bg-indigo-800 border-t border-white/10 mt-2">
+                        Hit/Afterblow (+{tournament.settings.afterblow.attacker}/{tournament.settings.afterblow.defender})
+                    </button>
                 </div>
             </div>
 
@@ -78,6 +85,9 @@
                     <button onclick={() => recordHit('arms', p2.id)} class="{btnClass} bg-red-800 hover:bg-red-700">
                         Arms (+{tournament.settings.points.arms})
                     </button>
+                    <button onclick={() => recordAfterblow(p2.id)} class="{btnClass} bg-rose-900/80 hover:bg-rose-800 border-t border-white/10 mt-2">
+                        Hit/Afterblow (+{tournament.settings.afterblow.attacker}/{tournament.settings.afterblow.defender})
+                    </button>
                 </div>
             </div>
         </div>
@@ -88,6 +98,9 @@
                 Last action: 
                 {#if tournament.currentMatch.rounds.at(-1)?.type === 'double'}
                     Double Hit
+                {:else if tournament.currentMatch.rounds.at(-1)?.type === 'afterblow'}
+                    {@const lastRound = tournament.currentMatch.rounds.at(-1)}
+                    Hit w/ Afterblow by {lastRound?.scorerId === p1.id ? p1.name : p2.name}
                 {:else}
                     {@const lastRound = tournament.currentMatch.rounds.at(-1)}
                     Hit to {lastRound?.hitLocation} by {lastRound?.scorerId === p1.id ? p1.name : p2.name}

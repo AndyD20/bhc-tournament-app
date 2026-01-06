@@ -19,7 +19,7 @@ export interface Match {
     rounds: {
         p1Score: number;
         p2Score: number;
-        type: 'hit' | 'double' | 'draw';
+        type: 'hit' | 'double' | 'draw' | 'afterblow';
         hitLocation?: HitLocation; // For p1 or p2 hit
         scorerId?: string; // Who got the points
     }[];
@@ -34,6 +34,10 @@ export interface Settings {
         body: number;
         arms: number;
     };
+    afterblow: {
+        attacker: number;
+        defender: number;
+    };
 }
 
 export class TournamentStore {
@@ -46,6 +50,10 @@ export class TournamentStore {
             head: 3,
             body: 2,
             arms: 1
+        },
+        afterblow: {
+            attacker: 2,
+            defender: 1
         }
     });
 
@@ -157,7 +165,7 @@ export class TournamentStore {
         this.matches = scheduled;
     }
 
-    recordRound(type: 'hit' | 'double', scorerId?: string, location?: HitLocation) {
+    recordRound(type: 'hit' | 'double' | 'afterblow', scorerId?: string, location?: HitLocation) {
         if (!this.currentMatch) return;
 
         let p1Score = 0;
@@ -174,6 +182,19 @@ export class TournamentStore {
                 p1Score = points;
             } else {
                 p2Score = points;
+            }
+        } else if (type === 'afterblow' && scorerId) {
+            // Scorer is the Attacker (initiator)
+            // Opponent is the Defender (afterblow)
+            const ptsAttacker = this.settings.afterblow.attacker;
+            const ptsDefender = this.settings.afterblow.defender;
+
+            if (scorerId === this.currentMatch.p1Id) {
+                p1Score = ptsAttacker;
+                p2Score = ptsDefender;
+            } else {
+                p2Score = ptsAttacker;
+                p1Score = ptsDefender;
             }
         }
 

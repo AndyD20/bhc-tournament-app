@@ -105,6 +105,28 @@
                         />
                     </div>
                 </div>
+
+                <h3 class="text-lg font-semibold mt-6 mb-3 text-gray-200">Afterblow Points</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm text-gray-400" for="pts-afterblow-atk">Attacker</label>
+                        <input 
+                            id="pts-afterblow-atk"
+                            type="number" 
+                            bind:value={tournament.settings.afterblow.attacker}
+                            class="w-20 bg-white/10 border border-white/20 rounded px-2 py-1 text-white text-center focus:outline-none focus:border-amber-500"
+                        />
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm text-gray-400" for="pts-afterblow-def">Defender</label>
+                        <input 
+                            id="pts-afterblow-def"
+                            type="number" 
+                            bind:value={tournament.settings.afterblow.defender}
+                            class="w-20 bg-white/10 border border-white/20 rounded px-2 py-1 text-white text-center focus:outline-none focus:border-amber-500"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
 
