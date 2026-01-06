@@ -96,12 +96,12 @@ export class TournamentStore {
 
     generateSchedule() {
         // Round robin: every participant fights every other participant
-        const newMatches: Match[] = [];
+        let allMatches: Match[] = [];
         const ids = this.participants.map(p => p.id);
 
         for (let i = 0; i < ids.length; i++) {
             for (let j = i + 1; j < ids.length; j++) {
-                newMatches.push({
+                allMatches.push({
                     id: crypto.randomUUID(),
                     p1Id: ids[i],
                     p2Id: ids[j],
@@ -111,9 +111,50 @@ export class TournamentStore {
             }
         }
 
-        // Shuffle matches for variance? Or keep standard order. 
-        // Standard order is fine for now.
-        this.matches = newMatches;
+        // Shuffle initially for randomness baseline
+        allMatches = allMatches.sort(() => Math.random() - 0.5);
+
+        const scheduled: Match[] = [];
+        const used = new Set<number>(); // indices of allMatches used
+
+        // Greedy approach to build schedule minimizing consecutive fights
+        while (scheduled.length < allMatches.length) {
+            const lastMatch = scheduled[scheduled.length - 1];
+            const lastParticipants = lastMatch ? [lastMatch.p1Id, lastMatch.p2Id] : [];
+
+            // Find best candidate in remaining pool
+            let bestCandidateIndex = -1;
+
+            // 1. Try to find match where neither player fought immediately before
+            for (let i = 0; i < allMatches.length; i++) {
+                if (used.has(i)) continue;
+
+                const m = allMatches[i];
+                if (!lastParticipants.includes(m.p1Id) && !lastParticipants.includes(m.p2Id)) {
+                    bestCandidateIndex = i;
+                    break;
+                }
+            }
+
+            // 2. Fallback: If no perfect candidate, just pick the first available
+            if (bestCandidateIndex === -1) {
+                for (let i = 0; i < allMatches.length; i++) {
+                    if (!used.has(i)) {
+                        bestCandidateIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            if (bestCandidateIndex !== -1) {
+                used.add(bestCandidateIndex);
+                scheduled.push(allMatches[bestCandidateIndex]);
+            } else {
+                break; // Should never happen if loop logic is correct
+            }
+        }
+
+        this.matches = scheduled;
     }
 
     recordRound(type: 'hit' | 'double', scorerId?: string, location?: HitLocation) {
