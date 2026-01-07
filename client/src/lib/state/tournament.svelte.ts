@@ -258,6 +258,70 @@ export class TournamentStore {
         }
     }
 
+    undoLastRound() {
+        if (!this.tournamentStarted) return;
+
+        // If current match is potentially in progress (has rounds)
+        if (this.currentMatch && this.currentMatch.rounds.length > 0) {
+            this.currentMatch.rounds.pop();
+            return;
+        }
+
+        // If current match is empty, we might have just finished the previous match
+        // Or we are at the end of tournament (tournamentFinished might be true)
+        if (this.currentMatchIndex > 0 || this.tournamentFinished) {
+            // If tournament was finished, we need to un-finish it
+            if (this.tournamentFinished) {
+                this.tournamentFinished = false;
+                // currentMatchIndex stays same if we finished (last match), 
+                // BUT my finishMatch logic increments index if < length-1. 
+                // If it was the *last* match, it sets tournamentFinished = true.
+                // Does it increment index on the last match?
+                // logic: if (index < length - 1) index++ else finished=true.
+                // So if finished, index is pointing to the LAST match.
+            } else {
+                // If not finished, we are at a new fresh match (index advanced), so step back
+                this.currentMatchIndex--;
+            }
+
+            const match = this.currentMatch;
+
+            if (match && match.status === 'completed') {
+                // Revert stats
+                const p1 = this.participants.find(p => p.id === match.p1Id);
+                const p2 = this.participants.find(p => p.id === match.p2Id);
+
+                if (p1 && p2) {
+                    const p1Total = match.rounds.reduce((sum, r) => sum + r.p1Score, 0);
+                    const p2Total = match.rounds.reduce((sum, r) => sum + r.p2Score, 0);
+
+                    p1.totalPoints -= p1Total;
+                    p2.totalPoints -= p2Total;
+                    p1.matchesPlayed--;
+                    p2.matchesPlayed--;
+
+                    if (match.winnerId === p1.id) {
+                        p1.wins--;
+                        p2.losses--;
+                    } else if (match.winnerId === p2.id) {
+                        p2.wins--;
+                        p1.losses--;
+                    } else {
+                        p1.draws--;
+                        p2.draws--;
+                    }
+                }
+
+                // Revert match status
+                match.status = 'active';
+                match.winnerId = null;
+
+                // Pop the round that caused the finish
+                match.rounds.pop();
+            }
+        }
+    }
+
     reset() {
         this.tournamentStarted = false;
         this.tournamentFinished = false;

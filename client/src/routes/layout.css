@@ -23,15 +23,18 @@
 
 /* Custom scrollbar globally */
 ::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
+
 ::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-    background: #4b5563; 
-    border-radius: 4px;
+  background: #4b5563;
+  border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-    background: #6b7280; 
+  background: #6b7280;
 }

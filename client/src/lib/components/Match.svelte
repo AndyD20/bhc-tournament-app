@@ -106,7 +106,18 @@
                     Hit to {lastRound?.hitLocation} by {lastRound?.scorerId === p1.id ? p1.name : p2.name}
                 {/if}
             </div>
-        {/if}
+                {/if}
+
+
+        <div class="mt-8 flex justify-center">
+            <button 
+                onclick={() => tournament.undoLastRound()}
+                disabled={tournament.currentMatchIndex === 0 && (!tournament.currentMatch || tournament.currentMatch.rounds.length === 0)}
+                class="px-6 py-2 rounded border border-yellow-500/50 text-yellow-500 hover:bg-yellow-500/10 font-bold uppercase text-sm tracking-wider transition-colors disabled:opacity-0 disabled:pointer-events-none"
+            >
+                Undo Last Action
+            </button>
+        </div>
     </div>
 {:else}
     <div class="text-center text-white">Loading match data...</div>

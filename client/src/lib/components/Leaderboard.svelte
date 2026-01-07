@@ -47,5 +47,12 @@
         >
             New Tournament
         </button>
+
+        <button 
+            onclick={() => tournament.undoLastRound()}
+            class="ml-4 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 border border-yellow-500/20 font-bold py-3 px-8 rounded transition-all uppercase tracking-widest"
+        >
+            Undo Last Action
+        </button>
     </div>
 </div>
