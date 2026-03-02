@@ -7,6 +7,8 @@ export interface Participant {
     losses: number;
     draws: number;
     totalPoints: number;
+    pointsScored: number;
+    pointsAgainst: number;
     matchesPlayed: number;
 }
 
@@ -75,6 +77,8 @@ export class TournamentStore {
             losses: 0,
             draws: 0,
             totalPoints: 0,
+            pointsScored: 0,
+            pointsAgainst: 0,
             matchesPlayed: 0
         });
     }
@@ -96,6 +100,8 @@ export class TournamentStore {
             p.losses = 0;
             p.draws = 0;
             p.totalPoints = 0;
+            p.pointsScored = 0;
+            p.pointsAgainst = 0;
             p.matchesPlayed = 0;
         });
     }
@@ -233,6 +239,13 @@ export class TournamentStore {
         if (p1 && p2) {
             p1.totalPoints += p1Total;
             p2.totalPoints += p2Total;
+
+            p1.pointsScored += p1Total;
+            p1.pointsAgainst += p2Total;
+
+            p2.pointsScored += p2Total;
+            p2.pointsAgainst += p1Total;
+
             p1.matchesPlayed++;
             p2.matchesPlayed++;
 
@@ -291,6 +304,13 @@ export class TournamentStore {
 
                     p1.totalPoints -= p1Total;
                     p2.totalPoints -= p2Total;
+
+                    p1.pointsScored -= p1Total;
+                    p1.pointsAgainst -= p2Total;
+
+                    p2.pointsScored -= p2Total;
+                    p2.pointsAgainst -= p1Total;
+
                     p1.matchesPlayed--;
                     p2.matchesPlayed--;
 
