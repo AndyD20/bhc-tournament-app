@@ -1,9 +1,7 @@
-import { browser } from '$app/environment';
-
 export type HitLocation = 'head' | 'body' | 'arms';
 
 export interface Participant {
-    id: string;
+    id: number;
     name: string;
     wins: number;
     losses: number;
@@ -13,18 +11,18 @@ export interface Participant {
 }
 
 export interface Match {
-    id: string;
-    p1Id: string;
-    p2Id: string;
+    id: number;
+    p1Id: number;
+    p2Id: number;
     rounds: {
         p1Score: number;
         p2Score: number;
         type: 'hit' | 'double' | 'draw' | 'afterblow';
         hitLocation?: HitLocation; // For p1 or p2 hit
-        scorerId?: string; // Who got the points
+        scorerId?: number; // Who got the points
     }[];
     status: 'pending' | 'active' | 'completed';
-    winnerId?: string | null; // null for draw
+    winnerId?: number | null; // null for draw
 }
 
 export interface Settings {
@@ -71,7 +69,7 @@ export class TournamentStore {
     addParticipant(name: string) {
         if (!name.trim()) return;
         this.participants.push({
-            id: crypto.randomUUID(),
+            id: this.participants.length + 1,
             name: name.trim(),
             wins: 0,
             losses: 0,
@@ -81,7 +79,7 @@ export class TournamentStore {
         });
     }
 
-    removeParticipant(id: string) {
+    removeParticipant(id: number) {
         this.participants = this.participants.filter(p => p.id !== id);
     }
 
@@ -110,7 +108,7 @@ export class TournamentStore {
         for (let i = 0; i < ids.length; i++) {
             for (let j = i + 1; j < ids.length; j++) {
                 allMatches.push({
-                    id: crypto.randomUUID(),
+                    id: this.matches.length + 1,
                     p1Id: ids[i],
                     p2Id: ids[j],
                     rounds: [],
@@ -165,7 +163,7 @@ export class TournamentStore {
         this.matches = scheduled;
     }
 
-    recordRound(type: 'hit' | 'double' | 'afterblow', scorerId?: string, location?: HitLocation) {
+    recordRound(type: 'hit' | 'double' | 'afterblow', scorerId?: number, location?: HitLocation) {
         if (!this.currentMatch) return;
 
         let p1Score = 0;
@@ -222,7 +220,7 @@ export class TournamentStore {
         const p2Total = this.currentMatch.rounds.reduce((sum, r) => sum + r.p2Score, 0);
 
         // Determine winner
-        let winnerId: string | null = null;
+        let winnerId: number | null = null;
         if (p1Total > p2Total) winnerId = this.currentMatch.p1Id;
         else if (p2Total > p1Total) winnerId = this.currentMatch.p2Id;
 
@@ -261,8 +259,8 @@ export class TournamentStore {
     undoLastRound() {
         if (!this.tournamentStarted) return;
 
-        // If current match is potentially in progress (has rounds)
-        if (this.currentMatch && this.currentMatch.rounds.length > 0) {
+        // If current match is potentially in progress (has rounds but not completed)
+        if (this.currentMatch && this.currentMatch.status !== 'completed' && this.currentMatch.rounds.length > 0) {
             this.currentMatch.rounds.pop();
             return;
         }
@@ -273,18 +271,14 @@ export class TournamentStore {
             // If tournament was finished, we need to un-finish it
             if (this.tournamentFinished) {
                 this.tournamentFinished = false;
-                // currentMatchIndex stays same if we finished (last match), 
-                // BUT my finishMatch logic increments index if < length-1. 
-                // If it was the *last* match, it sets tournamentFinished = true.
-                // Does it increment index on the last match?
-                // logic: if (index < length - 1) index++ else finished=true.
-                // So if finished, index is pointing to the LAST match.
+                // currentMatchIndex stays same if we finished (last match)
             } else {
-                // If not finished, we are at a new fresh match (index advanced), so step back
+                // If not finished, we are at a new fresh match, so step back
                 this.currentMatchIndex--;
             }
 
-            const match = this.currentMatch;
+            // DO NOT rely on $derived this.currentMatch mid-update; read matches array directly
+            const match = this.matches[this.currentMatchIndex];
 
             if (match && match.status === 'completed') {
                 // Revert stats
