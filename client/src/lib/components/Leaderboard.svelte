@@ -31,7 +31,6 @@
 						<th class="p-3 text-center text-red-400 md:p-4" title="Points Against (Hits Received)"
 							>Received</th
 						>
-						<th class="p-3 text-right md:p-4">Total Pts</th>
 					</tr>
 				</thead>
 				<tbody class="divide-y divide-white/5">
@@ -44,9 +43,6 @@
 							<td class="hidden p-3 text-center text-gray-400 sm:table-cell md:p-4">{p.draws}</td>
 							<td class="p-3 text-center font-mono text-blue-300 md:p-4">{p.pointsScored}</td>
 							<td class="p-3 text-center font-mono text-red-300 md:p-4">{p.pointsAgainst}</td>
-							<td class="p-3 text-right font-mono font-bold text-amber-400 md:p-4"
-								>{p.totalPoints}</td
-							>
 						</tr>
 					{/each}
 				</tbody>
