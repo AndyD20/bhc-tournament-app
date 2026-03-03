@@ -29,6 +29,8 @@ export interface Match {
 
 export interface Settings {
     roundsPerMatch: number;
+    maxPointsEnabled: boolean;
+    maxPoints: number;
     points: {
         head: number;
         body: number;
@@ -46,6 +48,8 @@ export class TournamentStore {
     matches = $state<Match[]>([]);
     settings = $state<Settings>({
         roundsPerMatch: 3,
+        maxPointsEnabled: false,
+        maxPoints: 10,
         points: {
             head: 3,
             body: 2,
@@ -211,7 +215,13 @@ export class TournamentStore {
         });
 
         // Check if match is finished
-        if (this.currentMatch.rounds.length >= this.settings.roundsPerMatch) {
+        const currentP1Total = this.currentMatch.rounds.reduce((sum, r) => sum + r.p1Score, 0);
+        const currentP2Total = this.currentMatch.rounds.reduce((sum, r) => sum + r.p2Score, 0);
+
+        const maxPointsReached = this.settings.maxPointsEnabled &&
+            (currentP1Total >= this.settings.maxPoints || currentP2Total >= this.settings.maxPoints);
+
+        if (this.currentMatch.rounds.length >= this.settings.roundsPerMatch || maxPointsReached) {
             this.finishMatch();
         }
     }

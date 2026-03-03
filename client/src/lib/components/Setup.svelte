@@ -89,6 +89,30 @@
 							class="w-full rounded border border-white/20 bg-white/10 px-3 py-2 text-white focus:border-amber-500 focus:outline-none"
 						/>
 					</div>
+
+					<div class="mt-2 border-t border-white/10 pt-4">
+						<label class="mb-2 flex cursor-pointer items-center gap-2">
+							<input
+								type="checkbox"
+								bind:checked={tournament.settings.maxPointsEnabled}
+								class="h-4 w-4 rounded border-white/20 bg-white/10 text-amber-500 focus:ring-2 focus:ring-amber-500 focus:ring-offset-gray-900 focus:outline-none"
+							/>
+							<span class="text-sm font-semibold text-gray-200">Enable Max Points Limit</span>
+						</label>
+
+						{#if tournament.settings.maxPointsEnabled}
+							<div class="animate-in fade-in slide-in-from-top-2 mt-2">
+								<label class="mb-1 block text-sm text-gray-400" for="max-points">Max Points</label>
+								<input
+									id="max-points"
+									type="number"
+									min="1"
+									bind:value={tournament.settings.maxPoints}
+									class="w-full rounded border border-white/20 bg-white/10 px-3 py-2 text-white focus:border-amber-500 focus:outline-none"
+								/>
+							</div>
+						{/if}
+					</div>
 				</div>
 			</div>
 
