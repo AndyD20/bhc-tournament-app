@@ -2,6 +2,7 @@
 	import { tournament } from '$lib/state/tournament.svelte';
 
 	let newParticipantName = $state('');
+	let topOfPage: HTMLDivElement;
 
 	function addParticipant(e?: Event) {
 		e?.preventDefault();
@@ -16,7 +17,7 @@
 	}
 </script>
 
-<div class="mx-auto max-w-2xl space-y-8 p-4">
+<div bind:this={topOfPage} class="mx-auto max-w-2xl space-y-8 p-4">
 	<div class="rounded-xl border border-white/10 bg-white/5 p-6 shadow-xl">
 		<h2 class="mb-4 font-serif text-2xl font-bold text-amber-500">Tournament Setup</h2>
 
@@ -184,7 +185,10 @@
 		</div>
 
 		<button
-			onclick={() => tournament.startTournament()}
+			onclick={() => {
+				topOfPage.scrollIntoView({ behavior: 'smooth' });
+				tournament.startTournament();
+			}}
 			disabled={tournament.participants.length < 2}
 			class="w-full rounded bg-amber-600 py-4 text-lg font-bold tracking-wider text-white uppercase shadow-lg transition-all hover:bg-amber-700 hover:shadow-amber-900/20 disabled:bg-gray-700 disabled:text-gray-500"
 		>
