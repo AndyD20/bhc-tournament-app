@@ -31,6 +31,7 @@ export interface Settings {
     roundsPerMatch: number;
     maxPointsEnabled: boolean;
     maxPoints: number;
+    preventDraws: boolean;
     points: {
         head: number;
         body: number;
@@ -50,6 +51,7 @@ export class TournamentStore {
         roundsPerMatch: 3,
         maxPointsEnabled: false,
         maxPoints: 10,
+        preventDraws: false,
         points: {
             head: 3,
             body: 2,
@@ -221,7 +223,10 @@ export class TournamentStore {
         const maxPointsReached = this.settings.maxPointsEnabled &&
             (currentP1Total >= this.settings.maxPoints || currentP2Total >= this.settings.maxPoints);
 
-        if (this.currentMatch.rounds.length >= this.settings.roundsPerMatch || maxPointsReached) {
+        const isDraw = currentP1Total === currentP2Total;
+        const reachedLimit = this.currentMatch.rounds.length >= this.settings.roundsPerMatch || maxPointsReached;
+
+        if (reachedLimit && !(this.settings.preventDraws && isDraw)) {
             this.finishMatch();
         }
     }

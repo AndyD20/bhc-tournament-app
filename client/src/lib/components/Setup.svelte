@@ -112,6 +112,17 @@
 								/>
 							</div>
 						{/if}
+
+						<label class="mt-4 flex cursor-pointer items-center gap-2">
+							<input
+								type="checkbox"
+								bind:checked={tournament.settings.preventDraws}
+								class="h-4 w-4 rounded border-white/20 bg-white/10 text-amber-500 focus:ring-2 focus:ring-amber-500 focus:ring-offset-gray-900 focus:outline-none"
+							/>
+							<span class="text-sm font-semibold text-gray-200"
+								>Prevent Draws (Tiebreaker Rounds)</span
+							>
+						</label>
 					</div>
 				</div>
 			</div>
