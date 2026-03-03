@@ -12,8 +12,7 @@
 
 <div class="mx-auto flex h-full max-w-4xl flex-col p-4">
 	<h2 class="mb-8 text-center font-serif text-4xl font-bold text-amber-500">Tournament Results</h2>
-
-	<div class="flex-1 overflow-hidden rounded-xl border border-white/10 bg-white/5 shadow-2xl">
+	<div class="flex-1 rounded-xl border border-white/10 bg-white/5 shadow-2xl">
 		<div class="overflow-x-auto">
 			<table class="w-full max-w-full text-left">
 				<thead

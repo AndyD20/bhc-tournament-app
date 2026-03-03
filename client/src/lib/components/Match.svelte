@@ -39,7 +39,7 @@
 </script>
 
 {#if tournament.currentMatch && p1 && p2}
-	<div class="mx-auto flex h-full w-full max-w-4xl flex-col items-center justify-center p-4">
+	<div class="mx-auto flex w-full max-w-4xl flex-col items-center justify-center p-4">
 		<!-- Match Header -->
 		<div class="mb-8 text-center">
 			<h2 class="mb-2 font-serif text-3xl font-bold text-amber-500">
