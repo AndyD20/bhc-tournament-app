@@ -60,9 +60,9 @@ interface TournamentSnapshot {
 
 const STORAGE_KEY = 'bhc-tournament-state';
 const DEFAULT_SETTINGS: Settings = {
-    roundsPerMatch: 3,
+    roundsPerMatch: 4,
     maxPointsEnabled: false,
-    maxPoints: 10,
+    maxPoints: 5,
     preventDraws: false,
     points: {
         head: 3,
@@ -86,8 +86,8 @@ export class TournamentStore {
     tournamentFinished = $state(false);
 
     // Monotonic ID counters (avoids collisions after participant removal)
-    private nextParticipantId = 1;
-    private nextMatchId = 1;
+    private nextParticipantId = 0;
+    private nextMatchId = 0;
 
     // Derived
     currentMatch = $derived(this.matches[this.currentMatchIndex]);

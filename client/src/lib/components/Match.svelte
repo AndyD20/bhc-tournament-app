@@ -52,6 +52,15 @@
 					Round <span class="font-bold text-white">{currentRound + 1}</span> of {maxRounds}
 				{/if}
 			</div>
+			{#if tournament.matches[tournament.currentMatchIndex + 1]}
+				<h4 class="mt-2 font-serif text-xl font-bold text-amber-500">
+					Up next: {tournament.participants.find(
+						(p) => p.id === tournament.matches[tournament.currentMatchIndex + 1].p1Id
+					)?.name} vs {tournament.participants.find(
+						(p) => p.id === tournament.matches[tournament.currentMatchIndex + 1].p2Id
+					)?.name}
+				</h4>
+			{/if}
 		</div>
 
 		<!-- Scoreboard -->
